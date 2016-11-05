@@ -1,10 +1,13 @@
 library(shiny)
 library(ggplot2)
+require(dplyr)        #for createDataPartition
+require(caret)        #for slice
+library(randomForest)
 
 function(input, output) {
   
   
-  setwd("E:/GitHub/R-FB-PG3")
+  # setwd("E:/GitHub/R-FB-PG4")
   train_ini <- read.csv("ZUP_M_h10.csv",header=TRUE, sep=";", row.names=NULL)
   train_ini$sl <- 0 
   test <- read.csv("ZUP_M_h16.csv",header=TRUE, sep=";", row.names=NULL)
@@ -54,20 +57,18 @@ function(input, output) {
   #find the clients with Head and Target together 
   train=train[train$isSameOrNever == 1,]
   
-  # доля купивших 
   nrow(train[train$isTarget == 1,])/nrow(train)
   
-  # доля купивших вместе с Head среди купивших
   nrow(train[train$isSameDay,]) / nrow(train[train$isTarget == 1,])
   
-  train$branch0 <- as.numeric(train$branch)
-  train$branch0 <- paste0(as.character(train$branch0))
-  train$branch0 <- factor(train$branch0)
-  
-  train$branchN <- paste(train$branch0,train$branch, sep = '=')
-  branches <- data.frame(table(train$branchN))
-  train$branch <- NULL 
-  train$branchN <- NULL 
+  # train$branch0 <- as.numeric(train$branch)
+  # train$branch0 <- paste0(as.character(train$branch0))
+  # train$branch0 <- factor(train$branch0)
+  # 
+  # train$branchN <- paste(train$branch0,train$branch, sep = '=')
+  # branches <- data.frame(table(train$branchN))
+  # train$branch <- NULL 
+  # train$branchN <- NULL 
   
   #mask the prediction colomns
   train$isNotOnlyTarget <- NULL #=Target
@@ -108,8 +109,8 @@ function(input, output) {
     if (is.null(input$features)) {return()} 
     parseText_eval <- paste0('as.factor(', anColName,') ~ ', paste0(input$features, collapse = " + "))
     
-    fit <- randomForest(eval(parse(text=parseText_eval)), data=train1[!is.na(train1[,anColName]),], importance=TRUE, ntree=200)
-    # fit <- randomForest(as.factor(isTarget) ~ cEmpl + branch0  + isUT, data=train1, importance=TRUE, ntree=200)
+    fit <- randomForest(eval(parse(text=parseText_eval)), data=train[!is.na(train[,anColName]),], importance=TRUE, ntree=200)
+    # fit <- randomForest(eval(parse(text=parseText_eval)), data=train1[!is.na(train1[,anColName]),], importance=TRUE, ntree=200)
     
     varImpPlot(fit)
     
