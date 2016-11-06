@@ -13,7 +13,7 @@ fluidPage(
   ),
   
   mainPanel(
-    textOutput('summary'),
+    # textOutput('randomForestExp'),
     plotOutput('plot')
     
   )

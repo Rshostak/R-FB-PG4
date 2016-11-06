@@ -1,0 +1,31 @@
+x;
+branch0;Companie's branch
+cAMen;
+cBus;
+cEmpl;Employees (cEmpl)
+cSaleMonth;
+cSMen;
+cWorkMonth;
+dFirstSale; First Sale Date (dFirstSale)
+is50lic;
+isAnyBuh;
+isBF;BF presents (isBF)
+isBS;
+isBTOR;
+isBUCorp;
+isEGG;
+isEmpl20;
+isKPR; KPR presents (isKPR)
+isLicense;License presents (isLicense)
+isPOS;POS presents (isPOS)
+isRep;
+isServer;Server presents (isServer)
+isService;Service presents (isService)
+isUT;UT presents (isUT)
+sG;
+sGHeadDate;
+sGS;
+sHeadDate;
+sS;
+sT;
+sTotal;Total Revenue (sTotal)

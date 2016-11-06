@@ -8,6 +8,8 @@ function(input, output) {
   
   
   # setwd("E:/GitHub/R-FB-PG4")
+  colNames <- read.csv("colNames.csv",header=TRUE, sep=";", row.names=NULL, stringsAsFactors = FALSE)
+  
   train_ini <- read.csv("ZUP_M_h10.csv",header=TRUE, sep=";", row.names=NULL)
   train_ini$sl <- 0 
   test <- read.csv("ZUP_M_h16.csv",header=TRUE, sep=";", row.names=NULL)
@@ -99,6 +101,9 @@ function(input, output) {
   all_var_PA = sort(names(train[colSums(is.na(train)) == 0]))
   all_var_NA = sort(names(train[colSums(is.na(train)) != 0]))
   all_var_PA <- all_var_PA[!is.element(all_var_PA,c(anColName,idColName,'sTarget'))]
+  names(all_var_PA) = colNames[colNames$x %in% all_var_PA,'X']
+  all_var_PA = all_var_PA[(colNames[colNames$x %in% all_var_PA,'X']) != '']
+  
   
   output$featureControls <- renderUI({
     checkboxGroupInput("features", "Choose features", all_var_PA, selected = all_var_PA)
@@ -109,16 +114,16 @@ function(input, output) {
     if (is.null(input$features)) {return()} 
     parseText_eval <- paste0('as.factor(', anColName,') ~ ', paste0(input$features, collapse = " + "))
     
-    fit <- randomForest(eval(parse(text=parseText_eval)), data=train[!is.na(train[,anColName]),], importance=TRUE, ntree=200)
+    Variable <- randomForest(eval(parse(text=parseText_eval)), data=train[!is.na(train[,anColName]),], importance=TRUE, ntree=200)
     # fit <- randomForest(eval(parse(text=parseText_eval)), data=train1[!is.na(train1[,anColName]),], importance=TRUE, ntree=200)
     
-    varImpPlot(fit)
+    varImpPlot(Variable)
     
 
-  }, height=700)
+  }, height=670)
   
   
-  output$summary <- renderPrint({
+  output$randomForestExp <- renderPrint({
     paste0('as.factor(', anColName,') ~ ', paste0(input$features, collapse = " + "))
   })
 
